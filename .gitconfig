@@ -1,0 +1,36 @@
+[user]
+	email = drb@wishalloy.com
+	name = Dan R Beste
+	# If git-tag(1) or git-commit(1) is not selecting the key you want it
+	# to automatically when creating a signed tag or commit, you can
+	# override the default selection with this variable. This option is
+	# passed unchanged to gpg’s --local-user parameter, so you may specify
+	# a key using any method that gpg supports.
+	signingKey = 71D38A95A3749895F8051A2D4F293B426D113556
+[alias]
+	d = diff
+	ds = diff --staged
+	follow = log --follow --oneline
+	graph = log --pretty=short --graph
+	l = log
+	s = status --branch --short
+	sl = log --oneline
+[commit]
+	# A boolean to specify whether all commits should be GPG signed. Use of
+	# this option when doing operations such as rebase can result in a
+	# large number of commits being signed. It may be convenient to use an
+	# agent to avoid typing your GPG passphrase several times.
+	gpgSign = true
+[tag]
+	# A boolean to specify whether annotated tags created should be GPG
+	# signed. If --annotate is specified on the command line, it takes
+	# precedence over this option.
+	forceSignAnnotated = true
+
+	# A boolean to specify whether all tags should be GPG signed. Use of
+	# this option when running in an automated script can result in a large
+	# number of tags being signed. It is therefore convenient to use an
+	# agent to avoid typing your gpg passphrase several times. Note that
+	# this option doesn’t affect tag signing behavior enabled by "-u
+	# <keyid>" or "--local-user=<keyid>" options.
+	gpgSign = true
