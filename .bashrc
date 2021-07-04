@@ -52,6 +52,9 @@ shopt -s histverify
 # pathname expansion (see Pathname Expansion above).
 shopt -s nocaseglob
 
+# shellcheck disable=SC1091
+source /home/drb/.nix-profile/etc/profile.d/nix.sh
+
 PATH="$HOME/.local/bin:$PATH"
 
 export EDITOR='nvim'
@@ -78,7 +81,7 @@ fi
 
 # If $SSH_AUTH_SOCK is not set, eval its environment file:
 if [[ ! "${SSH_AUTH_SOCK}" ]]; then
-  eval "$(<"${XDG_RUNTIME_DIR}/ssh-agent.env")"
+  eval "$(<"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/ssh-agent.env")"
 fi
 
 # You should always add the following lines to your .bashrc or whatever
@@ -111,6 +114,17 @@ function prompt_command() {
 
   local -r user_color="$bold_green"
 
+  if [[ -n "$IN_NIX_SHELL" ]]; then
+    if [[ "$IN_NIX_SHELL" == 'pure' ]]; then
+      local -r nix_status_color="$bold_green"
+    else
+      local -r nix_status_color="$bold_red"
+    fi
+
+    local -r nix_shell_status="${nix_status_color}$IN_NIX_SHELL${normal}"
+    local -r nix_shell="(${bold_white}nix-shell:${normal} $nix_shell_status) "
+  fi
+
   # Check the exit status of the last command captured by $exit_status:
   if [[ "$exit_status" -eq 0 ]]; then
     # For commands that return an exit status of zero, set the exit status's
@@ -142,7 +156,8 @@ function prompt_command() {
       local -r git_status_color="$bold_red"
     fi
     # Stylize the current branch:
-    local -r git_status=" ($git_status_color$(git branch --show-current)$normal)"
+    local -r git_branch="$(git branch --show-current)"
+    local -r git_status=" (${git_status_color}${git_branch}${normal})"
   fi
 
 
@@ -153,6 +168,7 @@ function prompt_command() {
   #
   PS1="$(
     echo -ne "${bold_white}${time} "
+    echo -ne "${nix_shell}"
     echo -ne "${user_color}${user}${bold_white}"
     echo -ne "@${host_color}${host}"
     echo -ne "${bold_white}:${normal}${PWD}"
