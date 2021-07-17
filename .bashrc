@@ -52,9 +52,6 @@ shopt -s histverify
 # pathname expansion (see Pathname Expansion above).
 shopt -s nocaseglob
 
-# shellcheck disable=SC1091
-source /home/drb/.nix-profile/etc/profile.d/nix.sh
-
 PATH="$HOME/.local/bin:$PATH"
 
 export EDITOR='nvim'
